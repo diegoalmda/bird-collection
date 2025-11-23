@@ -1,3 +1,4 @@
+import SplashScreen from "@components/SplashScreen";
 import {
   Quicksand_300Light,
   Quicksand_400Regular,
@@ -7,15 +8,12 @@ import {
   useFonts,
 } from "@expo-google-fonts/quicksand";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
-import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
+import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useCallback } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import "react-native-reanimated";
 import "../styles/global.css";
-
-SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -27,18 +25,33 @@ export default function RootLayout() {
     JotiOne_400Regular: require("../../assets/fonts/JotiOne-Regular.ttf"),
   });
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded || fontError) {
-      await SplashScreen.hideAsync();
+  const [appIsReady, setAppIsReady] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        if (fontsLoaded || fontError) {
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+          setAppIsReady(true);
+          router.replace("/(auth)");
+        }
+      } catch (e) {
+        console.warn(e);
+        setAppIsReady(true);
+        router.replace("/");
+      }
     }
+
+    prepare();
   }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded && !fontError) {
-    return null;
+  if (!appIsReady) {
+    return <SplashScreen />;
   }
 
   return (
-    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+    <View style={{ flex: 1 }}>
       <ThemeProvider value={DefaultTheme}>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
