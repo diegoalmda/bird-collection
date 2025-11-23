@@ -1,4 +1,4 @@
-import SplashScreen from "@components/SplashScreen";
+import { SplashScreen } from "@components/SplashScreen";
 import {
   Quicksand_300Light,
   Quicksand_400Regular,
@@ -8,7 +8,7 @@ import {
   useFonts,
 } from "@expo-google-fonts/quicksand";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
-import { Stack, useRouter } from "expo-router";
+import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
@@ -26,27 +26,18 @@ export default function RootLayout() {
   });
 
   const [appIsReady, setAppIsReady] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
-    async function prepare() {
-      try {
-        if (fontsLoaded || fontError) {
-          await new Promise((resolve) => setTimeout(resolve, 3000));
-          setAppIsReady(true);
-          router.replace("/(auth)");
-        }
-      } catch (e) {
-        console.warn(e);
+    if (fontsLoaded || fontError) {
+      const timer = setTimeout(() => {
         setAppIsReady(true);
-        router.replace("/");
-      }
-    }
+      }, 3000);
 
-    prepare();
+      return () => clearTimeout(timer);
+    }
   }, [fontsLoaded, fontError]);
 
-  if (!appIsReady) {
+  if (!fontsLoaded || !appIsReady) {
     return <SplashScreen />;
   }
 
