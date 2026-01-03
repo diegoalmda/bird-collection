@@ -1,6 +1,6 @@
+import { GameLoading } from "@components/ui/GameLoading";
 import React from "react";
 import { View } from "react-native";
-import { GameLoading } from "./GameLoading";
 
 export function SplashScreen() {
   return (

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Image, View } from "react-native";
 
 const BIRD_FRAMES = [
-  require("../assets/images/bird-run-1.png"),
-  require("../assets/images/bird-run-2.png"),
-  require("../assets/images/bird-run-3.png"),
+  require("@assets/images/bird-run-1.png"),
+  require("@assets/images/bird-run-2.png"),
+  require("@assets/images/bird-run-3.png"),
 ];
 
 const FRAME_DURATION = 350;
